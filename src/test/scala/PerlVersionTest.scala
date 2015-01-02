@@ -15,6 +15,7 @@ class PerlVersionTest extends FunSuite {
         val version = new PerlVersion("5.20.1")
 
         assert(version.ver == "5.20.1")
+        assert(version.isStable == true)
         assert(version.url == "http://www.cpan.org/src/5.0/perl-5.20.1.tar.gz")
     }
 }
