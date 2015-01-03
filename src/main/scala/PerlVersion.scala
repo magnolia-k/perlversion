@@ -1,7 +1,9 @@
 package com.github.magnolia_k.perl_version
 
-import scala.io.Source
+import scala.concurrent._
+import scala.concurrent.duration.Duration
 
+import dispatch._, Defaults._
 
 case class PerlVersion(ver: String) {
     private val matched = PerlVersion.re_ver.findAllIn(ver)
@@ -27,8 +29,10 @@ object PerlVersion {
 
     def getAll(): List[String] = {
         val re   = """<a href="perl-(5\.(\d{1,2})\.\d)\.tar\.gz">.*?</a>""".r
-        val html = Source.fromURL(site).mkString
+        val request = Http(url(site) OK as.String)
 
-        for (m <- re.findAllMatchIn(html).toList) yield m.group(1).toString
+        val result: String = Await.result(request, Duration.Inf)
+
+        for (m <- re.findAllMatchIn(result).toList) yield m.group(1).toString
     }
 }
